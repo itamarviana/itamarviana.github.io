@@ -1,54 +1,91 @@
-<!DOCTYPE html>
-<html>
- <head>
-  <link rel="stylesheet" type="text/css" href="volumeter.css">
-  <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="volumeter.js"></script>
-  
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script>
-  <script src="metronome.js"></script>
-  <link rel="stylesheet" type="text/css" href="metronome.css">
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
- <script>
+    <link rel="shortcut icon" href="./img/drum.ico" />
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="./css/custom.css">
 
- $(function() {
-          var paper = Raphael("metronome_container", 200, 200);
-	var m = metronome({
-	    len: 200,
-	    angle: 20,
-	    tick: tick,
-	    complete: done,
-	    paper: paper,
-	    audio: "tick.wav?raw=true"
-	});
-	m.make_input("#inputs");
-	m.shapes().outline.attr("fill", "#00A30F");
-	m.shapes().arm.attr("stroke", "#EEE");
-});
- </script>
- </head>
-<body>
+    <title>Batuqueiro</title>
+  </head>
+  <body>
 
-<table class="example">
-	<tr>
-		<td><div id="metronome_container"></div></td>
-		<td><div class="status"></div></td>
-	</tr>
-	<tr>
-		<td colspan=2 id="inputs"></td>
-	</tr>
-</table>
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Batuqueiro</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Início
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Sobre</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-<h1>Batuqueiro</h1>
-<canvas id="canvas" width="400" height="100"></canvas>
-<p>
- <div id="history">...</div>
- </p>
-<button type="button" id="clear">Limpar</button>
-<p>
-	Itamar
-</p>
-</body>
+  <!-- Page Content -->
+  <div class="container">
+    <div class="row mt-1">
+        <button id="btn-start" type="button" class="btn btn-primary">Iniciar</button>
+      <div class="col-lg-12 text-center">
+         
+        <canvas id="canvas-waves"></canvas>
+      </div>
+    </div>
+    <button id="btn-clean" type="button" class="btn btn-primary">Limpar</button>
+    <span id="stroke-count">0</span>
+    <table id="table-debug" class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Depuração</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+        </table>
+  </div>
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/sound-manager.js"></script>
+    <script src="./js/stroke-detection.js"></script>
+    <script>
+    $( document ).ready(function() {
+      var canvas_context = $("#canvas-waves")[0].getContext("2d");
+      var canvas_color =  $("#canvas-waves").css("background-color");
+      var stroke_detection = new StrokeDetection(canvas_context, canvas_color);
+      var sound_manger = new SoundManager(stroke_detection);
+      $( "#btn-start" ).click(function() {
+        if ($(this).hasClass('clicked')) {
+          $(this).removeClass('clicked');
+          $(this).html('Iniciar');
+        } else {
+          $(this).addClass('clicked');
+          $(this).html('Parar');
+        }
+        sound_manger.StartListeningMicrophone();
+      });
+
+      $( "#btn-clean" ).click(function() {
+        $("#table-debug").find("tr:gt(0)").remove();
+        stroke_detection.ClearCanvas();
+      });
+    });
+    </script>
+  </body>
 </html>
-
-

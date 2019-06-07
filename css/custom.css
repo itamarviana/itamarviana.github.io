@@ -1,0 +1,11 @@
+@import url("../bootstrap/css/bootstrap.css");
+
+canvas {
+  background-color: #ff3399;
+  width: 60%;
+  height: 30%;
+}
+
+.bg-dark {
+  background-color: #38004d  !important;
+}
