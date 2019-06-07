@@ -63,7 +63,7 @@ class SoundManager {
         // Create a Low Pass Filter to Isolate Low End Beat
         var filter = this.audio_context.createBiquadFilter();
         filter.type = "lowpass";
-        filter.frequency.value = 140;
+        filter.frequency.value = 580;
         microphone.connect(filter);
         filter.connect(this.analyser);
 
