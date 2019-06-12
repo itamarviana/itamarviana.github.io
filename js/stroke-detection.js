@@ -12,6 +12,7 @@ class StrokeDetection {
         this.canvas_color = canvas_color;
         this.last_stroke = Date.now();
         this.stroke_count = 0;
+
     }
 
     OnAudioProcess(sound_data) {
