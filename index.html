@@ -56,13 +56,9 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">BPM</span>
           </div>
-          <input type="text" id="bpm-input" value="40" class="form-control" placeholder="" aria-label=""
+          <input type="text" id="bpm-input" value="60" class="form-control" placeholder="" aria-label=""
             aria-describedby="basic-addon1">
-          <input type="range" min="1" max="200" value="40" class="slider" id="bpm-range">
-        </div>
-
-        <div class="col-sm-12 text-left">
-          <canvas id="canvas-waves" width="1000" height="200" class="waves"></canvas>
+          <input type="range" min="1" max="200" value="60" class="slider" id="bpm-range">
         </div>
 
         <div class="col-sm-12 text-left">
@@ -105,6 +101,7 @@
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
+
   <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="./js/sound-manager.js"></script>
   <script src="./js/stroke-detection.js"></script>
@@ -112,16 +109,15 @@
 
   <script>
     $(document).ready(function () {
-      var canvas_waves_context = $("#canvas-waves")[0].getContext("2d");
-      var canvas_waves_color = $("#canvas-waves").css("background-color");
-      var stroke_detection = new StrokeDetection(canvas_waves_context, canvas_waves_color);
 
       var canvas_metronome_context = $("#canvas-metronome")[0].getContext("2d");
       var canvas_metronome_color = $("#canvas-metronome").css("background-color");
+
+
       var metronome = new Metronome(canvas_metronome_context, canvas_metronome_color);
 
 
-      var sound_manger = new SoundManager(stroke_detection);
+      var sound_manger = new SoundManager(metronome);
 
 
       $("#btn-start").click(function () {
@@ -138,7 +134,7 @@
 
       $("#btn-clean").click(function () {
         $("#table-debug").find("tr:gt(0)").remove();
-        stroke_detection.ClearCanvas();
+        metronome.ClearCanvas();
       });
 
 

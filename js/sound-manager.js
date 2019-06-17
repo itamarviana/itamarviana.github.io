@@ -4,10 +4,10 @@
 class SoundManager {
     /**
      * 
-     * @param {StrokeDetection} stroke_detection 
+     * @param {Metronome} metronome 
      */
-    constructor(stroke_detection) {
-        this.stroke_detection = stroke_detection;
+    constructor(metronome) {
+        this.metronome = metronome;
         this.analyser = null;
         this.stream = null;
         this.audio_context = null;
@@ -29,14 +29,14 @@ class SoundManager {
                     var array_size = obj.analyser.fftSize;
                     var sound_data = new Uint8Array(array_size);
                     obj.analyser.getByteTimeDomainData(sound_data);
-                    obj.stroke_detection.OnAudioProcess(sound_data);
+                    obj.metronome.DetectStroke(sound_data);
                 }
             })
             .catch(function (err) { console.log(err.name + ": " + err.message); });
     }
 
     Stop() {
-        this.stroke_detection.ClearCanvas();
+        this.metronome.ClearCanvas();
         this.started = false;
         if (this.audio_context.state === 'closed') {
             return;
