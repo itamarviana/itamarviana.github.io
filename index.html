@@ -48,7 +48,7 @@
       <!-- Left side -->
       <div class="row align-items-start">
         <div class="col-sm-3 text-center">
-          <button id="btn-start" type="button" class="btn btn-primary">Iniciar</button>
+          <button id="btn-start" type="button" class="btn btn-primary p-1">Iniciar</button>
         </div>
 
 
@@ -56,43 +56,56 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">BPM</span>
           </div>
-          <input type="text" id="bpm-input" value="60" class="form-control" placeholder="" aria-label=""
+          <input type="text" id="bpm-input" value="40" class="form-control" placeholder="" aria-label=""
             aria-describedby="basic-addon1">
-          <input type="range" min="1" max="200" value="60" class="slider" id="bpm-range">
+          <input type="range" min="1" max="200" value="40" class="slider" id="bpm-range">
         </div>
 
-        <div class="col-sm-12 text-left">
-            <button id="btn-clean" type="button" class="btn btn-primary">Limpar</button>
-            <span id="stroke-count">0</span>
-            <table id="table-debug" class="table table-striped">
-              <thead>
-                <tr>
-                  <th scope="col">Depuração</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-          </div>
+
 
       </div>
 
     </div>
 
     <!-- Second Half -->
-    <div class="col-md-1 p-1 bg-white h-md-100 ">
-    </div>
+    <div class="col-md-9 p-1 bg-white h-md-100 ">
 
-    <div class="col-md-3 p-1 bg-white h-md-100 ">
-      <canvas id="canvas-metronome" width="300" height="500" class="metronome"></canvas>
-    </div>
 
-    <div class="col-md-5 p-1 bg-white h-md-100 ">
+      <div class="col-md-3 p-1 bg-white h-md-100 ">
+        <canvas id="canvas-metronome" width="500" height="700" class="metronome"></canvas>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <button id="left-strong" type="button" class="btn btn-primary float-left p-1">Forte</button>
+                    <button id="left-weak" class="btn btn-primary float-left p-1 ml-1">Fraco</button>
+
+                    <button id="right-strong" type="button" class="btn btn-primary float-right p-1  ml-1">Forte</button>
+                    <button id="right-weak" class="btn btn-primary float-right p-1">Fraco</button>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <div class="col-md-1 p-1 bg-white h-md-100 ">
+       
+      </div>
     </div>
 
   </div>
 
-
+  <div class="col-sm-12 text-left">
+      <button id="btn-clean" type="button" class="btn btn-primary">Limpar</button>
+      <span id="stroke-count">0</span>
+      <table id="table-debug" class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Depuração</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+    </div>
 
 
 
@@ -102,7 +115,11 @@
     integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script>
 
+  <script src=" https://cdnjs.cloudflare.com/ajax/libs/tone/13.8.12/Tone.min.js"></script>
+
+
   <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="./js/snare.js"></script>
   <script src="./js/sound-manager.js"></script>
   <script src="./js/stroke-detection.js"></script>
   <script src="./js/metronome.js"></script>
@@ -124,12 +141,17 @@
         if ($(this).hasClass('clicked')) {
           $(this).removeClass('clicked');
           $(this).html('Iniciar');
+          sound_manger.StopMicrophone();
+          metronome.Stop();
         } else {
           $(this).addClass('clicked');
           $(this).html('Parar');
+          sound_manger.StartMicrophone();
+          metronome.Start($("#bpm-input").val());
         }
-        sound_manger.StartListeningMicrophone();
-        metronome.Init($("#bpm-input").val());
+
+
+
       });
 
       $("#btn-clean").click(function () {
@@ -139,12 +161,33 @@
 
 
       $("#bpm-range").on('input', function () {
+        metronome.UpdateSpeed($(this).val());
         $("#bpm-input").val($(this).val());
       });
 
       $("#bpm-input").on('input', function () {
+        metronome.UpdateSpeed($(this).val());
         $("#bpm-range").val($(this).val());
       });
+    });
+
+
+    var snare = new Snare();
+
+    $("#left-strong").click(function () {
+      snare.PlayStrong();
+    });
+
+    $("#right-strong").click(function () {
+      snare.PlayStrong();
+    });
+
+    $("#left-weak").click(function () {
+      snare.PlayWeak();
+    });
+
+    $("#right-weak").click(function () {
+      snare.PlayWeak();
     });
   </script>
 </body>

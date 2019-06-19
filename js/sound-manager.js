@@ -12,14 +12,11 @@ class SoundManager {
         this.stream = null;
         this.audio_context = null;
         this.started = false;
+
     }
 
-    StartListeningMicrophone() {
-        if (this.started) {
-            this.Stop();
-            return;
-        }
-        this.started = true;
+    StartMicrophone() {
+
         var constraints = { audio: true };
         var obj = this;
         navigator.mediaDevices.getUserMedia(constraints)
@@ -35,13 +32,12 @@ class SoundManager {
             .catch(function (err) { console.log(err.name + ": " + err.message); });
     }
 
-    Stop() {
-        this.metronome.ClearCanvas();
-        this.started = false;
-        if (this.audio_context.state === 'closed') {
-            return;
-        }
+    StopMicrophone() {
+
         try {
+            if (this.audio_context.state === 'closed') {
+                return;
+            }
             this.stream.getTracks()[0].stop();
             this.audio_context.close(); // returns a promise;
         } catch (ex) {
@@ -61,13 +57,14 @@ class SoundManager {
         this.analyser.fftSize = 2048;
 
         // Create a Low Pass Filter to Isolate Low End Beat
-        var filter = this.audio_context.createBiquadFilter();
+/*         var filter = this.audio_context.createBiquadFilter();
         filter.type = "lowpass";
         filter.frequency.value = 580;
         microphone.connect(filter);
-        filter.connect(this.analyser);
+        filter.connect(this.analyser); */
 
-        //microphone.connect(analyser);
+        microphone.connect(this.analyser);
+        
         this.analyser.connect(javascript_node);
         javascript_node.connect(this.audio_context.destination);
 

@@ -10,7 +10,11 @@ class Metronome {
         this.note_width = canvas_context.canvas.height * 0.05;
 
         this.CreateStrokeBar();
-        this.active_notes = [this.CreateNote()];
+        this.active_notes = [this.CreateNote(0), 
+            this.CreateNote(1),
+            this.CreateNote(2),
+            this.CreateNote(4),
+           ];
         this.wait_line_ms = 0;
         this.last_stroke = Date.now();
         this.stroke_count = 0;
@@ -18,25 +22,23 @@ class Metronome {
         this.sound_data_size = 1;
         this.sound_data = [];
         this.points = 0;
+        this.UpdateSpeed(0);
+        this.UpdateSpeed(/*bpm=*/0);
+        this.Draw();
     }
 
-    Init(bpm) {
+    Start(bpm) {
+        this.UpdateSpeed(bpm);
+    }
+
+    Stop() {
+        this.UpdateSpeed(/*bpm=*/0);
+    }
+
+    UpdateSpeed(bpm) {
+        bpm = bpm * 4;
         this.schedule_m = 2. * 1. * bpm;
         this.speed_m = this.schedule_m * this.note_width;
-        this.last_date = Date.now();
-        this.note_width = this.canvas_context.canvas.height * 0.05;
-
-        this.CreateStrokeBar();
-        this.active_notes = [this.CreateNote(0), 
-                             this.CreateNote(1),
-                             this.CreateNote(2),
-                             this.CreateNote(4),
-                            ];
-        this.wait_line_ms = 0;
-        this.last_stroke = Date.now();
-        this.stroke_count = 0;
-
-        this.Draw();
     }
 
     ClearCanvas() {
@@ -159,7 +161,7 @@ class Metronome {
         this.AddSoundData(sound_data);
 
         let max_value = Math.max.apply(null, sound_data) / 128.0;
-        if (max_value > 1.2) {
+        if (max_value > 1.4) {
             this.HitNote();
             this.stroke_count += 1;
             $("#stroke-count").text("" + this.stroke_count);
@@ -283,7 +285,9 @@ class Rectangle {
     }
 
     Update(distance) {
-        this._y += distance;
+        if (distance != 0) {
+            this._y += distance;
+        }
         if (this._enable) {
             this.Draw();
         }
